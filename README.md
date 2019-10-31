@@ -1,5 +1,10 @@
-# prometheus-testclient
-Simple test for the prometheus stack
+# grafana-validator
+[![GoDoc](https://godoc.org/github.com/christianwoehrle/grafana-validator?status.svg)](https://godoc.org/github.com/christianwoehrle/grafana-validator)
+[![CircleCI](https://img.shields.io/circleci/project/github/christianwoehrle/grafana-validator.png)](https://circleci.com/gh/christianwoehrle/grafana-validator)
+[![Go Report Card](https://goreportcard.com/badge/github.com/christianwoehrle/grafana-validator)](https://goreportcard.com/report/github.com/christianwoehrle/grafana-validator)
+
+
+Simple test for grafana
 
 When we deploy our K8S CLuster we want to test if all components are working.
 
