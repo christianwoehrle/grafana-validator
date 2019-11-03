@@ -116,7 +116,7 @@ func main() {
 	for i, _ := range datasourceSpecs.Datasource {
 		res, err = Query(user, passwd, grafanaAdress, "/api/datasources/id/"+datasourceSpecs.Datasource[i].Name, "")
 		if err != nil {
-			fmt.Println("Fail: datasource " + datasourceSpecs.Datasource[i].Name + " not found")
+			fmt.Println("Fail: datasource "+datasourceSpecs.Datasource[i].Name+" not found: ", err)
 		} else {
 			var datasourceId grafana_dtos_cw.DataSourceID
 			err = json.Unmarshal(res, &datasourceId)
