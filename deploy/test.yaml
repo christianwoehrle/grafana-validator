@@ -20,7 +20,7 @@ spec:
           value: admin
         - name: GRAFANA_SERVICE
           value: prometheus-operator-grafana
-        command: ["envoy-preflight", "/app/goapp", "-grafanaAdress", "$(GRAFANA_SERVICE)", "-passwd", "$(PW)", "-user", "$(USER)"]
+        command: ["/app/envoy-preflight", "/app/goapp", "-grafanaAdress", "$(GRAFANA_SERVICE)", "-passwd", "$(PW)", "-user", "$(USER)"]
         securityContext:
           runAsUser: 1000
       restartPolicy: Never

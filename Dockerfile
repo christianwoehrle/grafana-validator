@@ -2,7 +2,7 @@
 FROM golang:1.13 AS build-env-monzo
 RUN git clone https://github.com/monzo/envoy-preflight.git
 RUN pwd
-RUN cd envoy-preflight && go get -v -d && go build -ldflags '-w -s' -a -installsuffix cgo -o envoy-preflight && cp envoy-preflight /
+RUN cd envoy-preflight && go get -v -d && go build -ldflags '-w -s' -a -installsuffix cgo -o envoy-preflight 
 
 
 
@@ -21,5 +21,4 @@ FROM scratch
 COPY --from=build-env /src/goapp /app/
 COPY --from=build-env-monzo /go/envoy-preflight/envoy-preflight /app/
 COPY check.yaml /
-
-ENTRYPOINT ["/app/goapp"]
+ENTRYPOINT ["/app/envoy-preflight"]
