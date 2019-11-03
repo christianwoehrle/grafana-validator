@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-test
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      containers:
+      - name: grafana-test
+        image: christianwoehrle/grafana-validator
+        imagePullPolicy: Always
+        env:
+        - name: PW
+          value: admin
+        - name: USER
+          value: admin
+        - name: GRAFANA_SERVICE
+          value: prometheus-operator-grafana
+        command: ["/app/goapp", "-grafanaAdress", "$(GRAFANA_SERVICE)", "-passwd", "$(PW)", "-user", "$(USER)"]
+        securityContext:
+          runAsUser: 1000
+      restartPolicy: Never
+
