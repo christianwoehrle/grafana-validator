@@ -12,13 +12,15 @@ spec:
         image: christianwoehrle/grafana-validator
         imagePullPolicy: Always
         env:
+        - name: ENVOY_ADMIN_API
+          value: localhost:15001
         - name: PW
           value: admin
         - name: USER
           value: admin
         - name: GRAFANA_SERVICE
           value: prometheus-operator-grafana
-        command: ["/app/goapp", "-grafanaAdress", "$(GRAFANA_SERVICE)", "-passwd", "$(PW)", "-user", "$(USER)"]
+        command: ["envoy-preflight", "/app/goapp", "-grafanaAdress", "$(GRAFANA_SERVICE)", "-passwd", "$(PW)", "-user", "$(USER)"]
         securityContext:
           runAsUser: 1000
       restartPolicy: Never
