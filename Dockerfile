@@ -19,7 +19,7 @@ RUN cd /src && go get -v -d && go build -ldflags '-w -s' -a -installsuffix cgo -
 # final stage
 FROM scratch
 COPY --from=build-env /src/goapp /app/
-COPY --from=build-env-monzo /go/envoy-preflight/envoy-preflight /app
+COPY --from=build-env-monzo /go/envoy-preflight/envoy-preflight /app/
 COPY check.yaml /
 
 ENTRYPOINT ["/app/goapp"]
