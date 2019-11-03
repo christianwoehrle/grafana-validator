@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -83,6 +84,14 @@ func Query(user string, pass string, addr string, path string, rawQuery string) 
 }
 
 func main() {
+	user := "admin"
+	passwd := "admin"
+	grafanaAdress := "localhost:8080"
+
+	flag.StringVar(&grafanaAdress, "grafanaAdress", "localhost:8080", "Address of Grafana")
+	flag.StringVar(&user, "user", "admin", "user")
+	flag.StringVar(&passwd, "passwd", "admin", "password")
+	flag.Parse()
 
 	filename, _ := filepath.Abs("./check.yaml")
 	yamlFile, err := ioutil.ReadFile(filename)
@@ -99,10 +108,6 @@ func main() {
 		panic(err)
 	}
 
-	user := "admin"
-	passwd := "admin"
-	grafanaAdress := "localhost:8080"
-
 	res, err := Query(user, passwd, grafanaAdress, "/api/datasources", "")
 
 	var datasourcelist grafana_dtos_cw.DataSourceList
@@ -112,21 +117,31 @@ func main() {
 		res, err = Query(user, passwd, grafanaAdress, "/api/datasources/id/"+datasourceSpecs.Datasource[i].Name, "")
 		if err != nil {
 			fmt.Println("Fail: datasource " + datasourceSpecs.Datasource[i].Name + " not found")
+		} else {
+			var datasourceId grafana_dtos_cw.DataSourceID
+			err = json.Unmarshal(res, &datasourceId)
+			if err != nil {
+				fmt.Println("Fail: datasourceid " + datasourceSpecs.Datasource[i].Name + " not found")
+			} else {
+				datasourceSpecs.Datasource[i].Id = datasourceId.Id
+				fmt.Println("Found datasource in Grafana:" + datasourceSpecs.Datasource[i].Name)
+			}
 		}
-		var datasourceId grafana_dtos_cw.DataSourceID
-		err = json.Unmarshal(res, &datasourceId)
-		if err != nil {
-			fmt.Println("Fail: datasourceid " + datasourceSpecs.Datasource[i].Name + " not found")
-		}
-		datasourceSpecs.Datasource[i].Id = datasourceId.Id
-		fmt.Println("Found datasource in Grafana:" + datasourceSpecs.Datasource[i].Name)
 	}
 
 	res, err = Query(user, passwd, grafanaAdress, "/api/health", "")
-	var health map[string]interface{}
-	err = json.Unmarshal(res, &health)
-	fmt.Println("Check /api/health, database:" + health["database"].(string))
+	if err != nil {
+		fmt.Println("Cant GET /ai/health, err:" + err.Error())
+	} else {
+		var health map[string]interface{}
+		err = json.Unmarshal(res, &health)
+		if err != nil {
+			fmt.Println("Cant marshal result of GET /ai/health, err:" + err.Error())
+		} else {
 
+			fmt.Println("Check /api/health, database:" + health["database"].(string))
+		}
+	}
 	/*
 		{
 			"commit": "67bad72",
@@ -136,10 +151,10 @@ func main() {
 	*/
 
 	for _, datasource := range datasourceSpecs.Datasource {
-		for _, test := range datasource.Tests {
-			if datasource.Id == 0 {
-				fmt.Println("No ID for Datasource <" + datasource.Name + ">, Skip Queries")
-			} else {
+		if datasource.Id == 0 {
+			fmt.Println("No ID for Datasource <" + datasource.Name + ">, Skip Queries")
+		} else {
+			for _, test := range datasource.Tests {
 
 				if datasource.Type == "Prometheus" {
 					path := "/api/datasources/proxy/" + strconv.Itoa(int(datasource.Id)) + PROM_QUERYPATH
