@@ -22,6 +22,5 @@ RUN cd /src && go get -v -d && go build -ldflags '-w -s' -a -installsuffix cgo -
 FROM scratch
 COPY --from=build-env /src/goapp /app/
 COPY --from=build-env-monzo /src/envoy-preflight /app/
-COPY check.yaml /
+COPY check.yaml /app/
 WORKDIR /app
-ENTRYPOINT ["/app/envoy-preflight"]
