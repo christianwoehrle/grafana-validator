@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/christianwoehrle/prometheus-testclient/prometheus_cw"
+	"github.com/christianwoehrle/grafana-validator/prometheus_cw"
 
-	"github.com/christianwoehrle/prometheus-testclient/grafana_dtos_cw"
+	"github.com/christianwoehrle/grafana-validator/grafana_dtos_cw"
 	yaml2 "gopkg.in/yaml.v2"
 )
 

@@ -1,4 +1,4 @@
-module github.com/christianwoehrle/prometheus-testclient
+module github.com/christianwoehrle/grafana-validator
 
 go 1.13
 
